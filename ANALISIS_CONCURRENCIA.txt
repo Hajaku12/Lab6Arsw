@@ -1,0 +1,25 @@
+Condiciones de Carrera Potenciales
+
+Almacenamiento Concurrente: Pueden existir múltiples hilos intentando guardar el mismo plano al mismo tiempo, lo que podría provocar excepciones no manejadas o la creación de entradas duplicadas en el sistema.
+
+Acceso Concurrente: Un hilo podría intentar acceder a un plano que otro hilo está modificando, lo que podría ocasionar errores o proporcionar datos inconsistentes al usuario.
+
+Actualizaciones Simultáneas: Es posible que varios hilos intenten modificar el mismo valor de un plano a la vez, lo que podría resultar en que una de las actualizaciones se pierda.
+
+Pérdida de Cambios: Si un hilo lee un plano y realiza modificaciones mientras otro hilo también está alterando el mismo plano, existe el riesgo de que la primera modificación se sobrescriba, lo que llevaría a la pérdida de cambios.
+
+Regiones Críticas Identificadas
+
+Proceso de Almacenamiento: En el método saveBlueprint, donde se lleva a cabo la verificación de la existencia de un plano y se añade si no está presente.
+
+Acceso a Datos de Planos: En los métodos getBlueprint, getBlueprintsByAuthor y getAllBlueprints, donde se leen los estados actuales de los planos.
+
+Modificación de Planos: En el método updateBlueprint, que se encarga de actualizar un plano que ya existe en la colección.
+
+Análisis y Estrategias Implementadas
+
+Para mitigar las condiciones de carrera sin afectar de manera significativa el rendimiento de la API, se implementaron las siguientes estrategias:
+
+Uso de ConcurrentHashMap: Se reemplazó HashMap por ConcurrentHashMap. Esta modificación permite que múltiples hilos accedan a la colección de planos de manera segura, mejorando el rendimiento al facilitar la concurrencia durante las operaciones de lectura.
+
+Operaciones Atómicas: Se utilizó el método putIfAbsent de ConcurrentHashMap en el método saveBlueprint, que permite agregar un plano solo si no existe, previniendo así posibles condiciones de carrera.
